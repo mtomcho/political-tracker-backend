@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const Database = require('better-sqlite3');
@@ -40,7 +41,18 @@ app.get('/api/politicians/:id/votes', (req, res) => {
       b.title,
       b.description,
       b.status,
-      b.introduced_date,
+
+// Add a politician
+app.post('/api/politicians', (req, res) => {
+  try {
+    const { name, position, party, election_year, state } = req.body;
+    const stmt = db.prepare('INSERT INTO politicians (name, position, party, election_year, state) VALUES (?, ?, ?, ?, ?)');
+    const result = stmt.run(name, position, party, election_year, state);
+    res.json({ success: true, id: result.lastInsertRowid });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});      b.introduced_date,
       b.pros,
       b.cons,
       b.vote_rounds
