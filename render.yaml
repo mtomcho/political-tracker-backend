@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: political-tracker-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 24.10.0
+      - key: PORT
+        value: 3000
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
