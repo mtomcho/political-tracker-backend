@@ -85,6 +85,28 @@ app.get('/api/bills/:id/votes', (req, res) => {
     ORDER BY p.name
   `).all(id);
   res.json({ data: votes });
+});// Add a bill
+app.post('/api/bills', (req, res) => {
+  try {
+    const { bill_number, title, description, status, introduced_date, pros, cons, vote_rounds } = req.body;
+    const stmt = db.prepare('INSERT OR IGNORE INTO bills (bill_number, title, description, status, introduced_date, pros, cons, vote_rounds) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    const result = stmt.run(bill_number, title, description, status, introduced_date, pros, cons, vote_rounds);
+    res.json({ success: true, id: result.lastInsertRowid });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Add a vote
+app.post('/api/votes', (req, res) => {
+  try {
+    const { politician_id, bill_id, vote } = req.body;
+    const stmt = db.prepare('INSERT OR IGNORE INTO votes (politician_id, bill_id, vote) VALUES (?, ?, ?)');
+    const result = stmt.run(politician_id, bill_id, vote);
+    res.json({ success: true, id: result.lastInsertRowid });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 app.listen(3000, () => {
   console.log('✅ Backend running on http://localhost:3000');
